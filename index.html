@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bohr-/Silo-Erfassung</title>
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <style>
     :root { --pad:12px; --gap:10px; --radius:10px; --maxw:1050px; }
     * { box-sizing:border-box; }
@@ -37,6 +37,24 @@
     .muted { color:color-mix(in oklab, CanvasText, transparent 45%); font-size:12px; }
     .pill { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid color-mix(in oklab, CanvasText, transparent 85%); }
     .right { text-align:right; }
+  
+    /* Force light theme for mobile readability */
+    :root { color-scheme: light; }
+    body { background:#ffffff; color:#111111; }
+    header { background:#ffffffcc; }
+    .card { background:#ffffff; }
+    /* High-contrast primary button */
+    button.primary { 
+      background:#2563eb; /* accessible blue */
+      color:#ffffff; 
+      border-color:#2563eb; 
+    }
+    button.primary:hover, button.primary:active { 
+      background:#1e54c7; 
+      border-color:#1e54c7; 
+    }
+    button { border-radius:10px; }
+
   </style>
   <!-- Supabase JS (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
@@ -149,6 +167,28 @@
       const footNote = document.getElementById('footNote');
 
       const usernameEl = document.getElementById('username');
+      
+      // Force logout (show login, hide app) on load & when returning via back/forward cache
+      function forceLogout() {
+        currentUser = null;
+        userBox.textContent = '';
+        loginCard.style.display = 'block';
+        appCard.style.display = 'none';
+        // clear login inputs
+        usernameEl.value = '';
+        passwordEl.value = '';
+      }
+
+      // On first load
+      forceLogout();
+
+      // If coming back from bfcache (Safari/Firefox), enforce logout again
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          forceLogout();
+        }
+      });
+
       const passwordEl = document.getElementById('password');
       document.getElementById('loginBtn').addEventListener('click', () => {
         const u = (usernameEl.value || '').trim().toLowerCase();
@@ -371,7 +411,25 @@
             th { font-size:12px; color:#333; }
             td.r { text-align:right; white-space:nowrap; }
             .footer { margin-top:12px; font-size:12px; color:#555; }
-          </style>
+          
+    /* Force light theme for mobile readability */
+    :root { color-scheme: light; }
+    body { background:#ffffff; color:#111111; }
+    header { background:#ffffffcc; }
+    .card { background:#ffffff; }
+    /* High-contrast primary button */
+    button.primary { 
+      background:#2563eb; /* accessible blue */
+      color:#ffffff; 
+      border-color:#2563eb; 
+    }
+    button.primary:hover, button.primary:active { 
+      background:#1e54c7; 
+      border-color:#1e54c7; 
+    }
+    button { border-radius:10px; }
+
+  </style>
           </head><body>
             <h1>${escapeHtml(title)}</h1>
             <div class="muted">Erstellt am ${new Date().toLocaleString('de-DE',{ timeZone:'Europe/Berlin' })}</div>
