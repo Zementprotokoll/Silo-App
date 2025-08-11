@@ -130,39 +130,39 @@
   </footer>
 
   <script>
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', function() {
     // === Supabase Setup ===
-    const SUPABASE_URL = "https://ridzmranmdpigksznaye.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHptcmFubWRwaWdrc3puYXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODkyMzQsImV4cCI6MjA3MDQ2NTIzNH0.F7LVQphhYCW4J_11qcqTH6z5ks2kzftIH3aB9m_ukiQ";
+    var SUPABASE_URL = "https://ridzmranmdpigksznaye.supabase.co";
+    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHptcmFubWRwaWdrc3puYXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODkyMzQsImV4cCI6MjA3MDQ2NTIzNH0.F7LVQphhYCW4J_11qcqTH6z5ks2kzftIH3aB9m_ukiQ";
     if (typeof supabase === 'undefined') {
       alert('Supabase-Bibliothek konnte nicht geladen werden. Bitte neu laden.');
       return;
     }
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+    var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
 
     // === State & Elements ===
-    const allowedUsers = ['david','michael','roman'];
-    let currentUser = null;
+    var allowedUsers = ['david','michael','roman'];
+    var currentUser = null;
 
-    const loginCard = document.getElementById('loginCard');
-    const appCard = document.getElementById('appCard');
-    const userBox = document.getElementById('userBox');
-    const footNote = document.getElementById('footNote');
-    const logoutBtn = document.getElementById('logoutBtn');
+    var loginCard = document.getElementById('loginCard');
+    var appCard = document.getElementById('appCard');
+    var userBox = document.getElementById('userBox');
+    var footNote = document.getElementById('footNote');
+    var logoutBtn = document.getElementById('logoutBtn');
 
-    const usernameEl = document.getElementById('username');
-    const passwordEl = document.getElementById('password');
-    const pileEl = document.getElementById('pile');
-    const dateEl = document.getElementById('date');
-    const flushEl = document.getElementById('flushKg');
-    const groutEl = document.getElementById('groutKg');
-    const fillEl = document.getElementById('siloFillKg');
-    const rowsEl = document.getElementById('rows');
-    const summaryEl = document.getElementById('summary');
+    var usernameEl = document.getElementById('username');
+    var passwordEl = document.getElementById('password');
+    var pileEl = document.getElementById('pile');
+    var dateEl = document.getElementById('date');
+    var flushEl = document.getElementById('flushKg');
+    var groutEl = document.getElementById('groutKg');
+    var fillEl = document.getElementById('siloFillKg');
+    var rowsEl = document.getElementById('rows');
+    var summaryEl = document.getElementById('summary');
 
     // Auto-restore session so refresh stays logged in
     (function restore(){
-      const savedUser = localStorage.getItem('silo_user');
+      var savedUser = localStorage.getItem('silo_user');
       if (savedUser) {
         currentUser = savedUser;
         userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
@@ -175,16 +175,16 @@
 
     // Heute als Default-Datum
     (function setToday(){
-      const now = new Date();
-      const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+      var now = new Date();
+      var y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
       dateEl.value = y + '-' + m + '-' + d;
     })();
 
     // Login Handler
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const u = (usernameEl.value || '').trim().toLowerCase();
-      const p = (passwordEl.value || '').trim().toLowerCase();
-      if (!allowedUsers.includes(u) || u !== p) {
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      var u = (usernameEl.value || '').trim().toLowerCase();
+      var p = (passwordEl.value || '').trim().toLowerCase();
+      if (allowedUsers.indexOf(u) === -1 || u !== p) {
         alert('Anmeldung fehlgeschlagen.');
         return;
       }
@@ -197,12 +197,14 @@
       loadEntries();
     });
 
-    [usernameEl, passwordEl].forEach(el => el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') document.getElementById('loginBtn').click();
-    }));
+    [usernameEl, passwordEl].forEach(function(el) {
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
+      });
+    });
 
     // Logout
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', function() {
       localStorage.removeItem('silo_user');
       currentUser = null;
       userBox.textContent = '';
@@ -214,18 +216,18 @@
     });
 
     // Create entry
-    document.getElementById('createBtn').addEventListener('click', async () => {
+    document.getElementById('createBtn').addEventListener('click', async function() {
       if (!currentUser) { alert('Bitte zuerst anmelden.'); return; }
-      const pile = (pileEl.value||'').trim();
-      const date = dateEl.value;
-      const flush = parseFloat(flushEl.value||'0');
-      const grout = parseFloat(groutEl.value||'0');
-      const fill  = parseFloat(fillEl.value||'0');
+      var pile = (pileEl.value||'').trim();
+      var date = dateEl.value;
+      var flush = parseFloat(flushEl.value||'0');
+      var grout = parseFloat(groutEl.value||'0');
+      var fill  = parseFloat(fillEl.value||'0');
       if (!pile) { alert('Pfahlnummer angeben.'); return; }
       if (!date) { alert('Datum auswählen.'); return; }
       if (flush < 0 || grout < 0 || fill < 0) { alert('Negative Werte sind nicht erlaubt.'); return; }
 
-      const { error } = await sb.from('entries').insert({
+      var ins = await sb.from('entries').insert({
         user_name: currentUser,
         pile_number: pile,
         date: date,
@@ -234,64 +236,66 @@
         silo_fill_kg: fill,
         reported: false
       });
-      if (error) { alert('Fehler beim Speichern: ' + error.message); return; }
+      if (ins.error) { alert('Fehler beim Speichern: ' + ins.error.message); return; }
 
       groutEl.value = ''; flushEl.value=''; fillEl.value='';
       await loadEntries(true);
     });
 
-    document.getElementById('hideOldBtn').addEventListener('click', () => render(currentEntries, {hideReported:true}));
-    document.getElementById('showAllBtn').addEventListener('click', () => render(currentEntries, {hideReported:false}));
-    document.getElementById('reportAllBtn').addEventListener('click', () => makeReport('Bericht (alle Einträge)', currentEntries));
-    document.getElementById('reportNewBtn').addEventListener('click', async () => {
-      const onlyNew = currentEntries.filter(e => !e.reported);
+    document.getElementById('hideOldBtn').addEventListener('click', function(){ render(currentEntries, {hideReported:true}); });
+    document.getElementById('showAllBtn').addEventListener('click', function(){ render(currentEntries, {hideReported:false}); });
+    document.getElementById('reportAllBtn').addEventListener('click', function(){ makeReport('Bericht (alle Einträge)', currentEntries); });
+    document.getElementById('reportNewBtn').addEventListener('click', async function() {
+      var onlyNew = currentEntries.filter(function(e){ return !e.reported; });
       if (onlyNew.length === 0) { alert('Keine neuen (nicht gemeldeten) Einträge.'); return; }
       await makeReport('Bericht (nur neue Einträge)', onlyNew, true);
     });
 
     // Data + render
-    let currentEntries = [];
+    var currentEntries = [];
 
-    async function loadEntries(scrollTop=false){
+    async function loadEntries(scrollTop){
       footNote.textContent = 'Lade Einträge…';
-      const { data, error } = await sb.from('entries').select('*').order('created_at', { ascending: false });
-      if (error) { alert('Fehler beim Laden: ' + error.message); return; }
-      currentEntries = data || [];
+      var q = await sb.from('entries').select('*').order('created_at', { ascending: false });
+      if (q.error) { alert('Fehler beim Laden: ' + q.error.message); return; }
+      currentEntries = q.data || [];
       render(currentEntries, {hideReported:false});
       footNote.textContent = currentEntries.length + ' Einträge – sichtbar für alle Nutzer.';
       if (scrollTop) window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function computeRunningRest(allEntriesAsc){
-      let rest = 0;
-      const map = new Map();
-      for (const e of allEntriesAsc) {
-        const total = (e.flushing_kg||0) + (e.grouting_kg||0);
+      var rest = 0;
+      var map = new Map();
+      for (var i=0;i<allEntriesAsc.length;i++) {
+        var e = allEntriesAsc[i];
+        var total = (e.flushing_kg||0) + (e.grouting_kg||0);
         rest = rest + (e.silo_fill_kg||0) - total;
         map.set(e.id, rest);
       }
       return map;
     }
 
-    function render(entries, opts={hideReported:false}){
-      const ascForCalc = [...entries].sort((a,b)=>{
-        const ad = a.date || ''; const bd = b.date || '';
+    function render(entries, opts){
+      opts = opts || {hideReported:false};
+      var ascForCalc = entries.slice().sort(function(a,b){
+        var ad = a.date || ''; var bd = b.date || '';
         if (ad !== bd) return ad < bd ? -1 : 1;
-        const ac = a.created_at || ''; const bc = b.created_at || '';
+        var ac = a.created_at || ''; var bc = b.created_at || '';
         if (ac !== bc) return ac < bc ? -1 : 1;
         return (a.id < b.id) ? -1 : 1;
       });
-      const restMap = computeRunningRest(ascForCalc);
+      var restMap = computeRunningRest(ascForCalc);
 
-      let list = [...entries].sort((a,b)=>{
-        const ac = a.created_at || ''; const bc = b.created_at || '';
+      var list = entries.slice().sort(function(a,b){
+        var ac = a.created_at || ''; var bc = b.created_at || '';
         return ac > bc ? -1 : (ac < bc ? 1 : 0);
       });
-      if (opts.hideReported) list = list.filter(e => !e.reported);
+      if (opts.hideReported) list = list.filter(function(e){ return !e.reported; });
 
-      const sumFlush = list.reduce((s,e)=>s+(e.flushing_kg||0),0);
-      const sumGrout = list.reduce((s,e)=>s+(e.grouting_kg||0),0);
-      const sumTotal = list.reduce((s,e)=>s+((e.flushing_kg||0)+(e.grouting_kg||0)),0);
+      var sumFlush = list.reduce(function(s,e){ return s+(e.flushing_kg||0); },0);
+      var sumGrout = list.reduce(function(s,e){ return s+(e.grouting_kg||0); },0);
+      var sumTotal = list.reduce(function(s,e){ return s+((e.flushing_kg||0)+(e.grouting_kg||0)); },0);
 
       summaryEl.textContent = 'Einträge: ' + list.length +
         ' | Spülung Σ: ' + fmt(sumFlush) + ' kg' +
@@ -300,72 +304,73 @@
       ;
 
       rowsEl.innerHTML = '';
-      for (const e of list) {
-        const total = (e.flushing_kg||0) + (e.grouting_kg||0);
-        const tr = document.createElement('tr');
-        tr.innerHTML = [
-          '<td>'+escapeHtml(e.pile_number||'')+'</td>',
-          '<td>'+escapeHtml(e.date||'')+(e.reported?'<div class="muted">Im Bericht</div>':'')+'</td>',
-          '<td class="right">'+fmt(e.flushing_kg)+'&nbsp;</td>',
-          '<td class="right">'+fmt(e.grouting_kg)+'&nbsp;</td>',
-          '<td class="right"><b>'+fmt(total)+'</b>&nbsp;</td>',
-          '<td class="right">'+fmt(restMap.get(e.id)||0)+'&nbsp;</td>',
-          '<td class="right">'+fmt(e.silo_fill_kg)+'&nbsp;</td>',
-          '<td><div class="row" style="gap:6px;"><button class="small" data-edit="'+e.id+'">Bearbeiten</button><button class="small" data-del="'+e.id+'">Löschen</button></div></td>'
-        ].join('');
+      for (var i=0;i<list.length;i++) {
+        var e = list[i];
+        var total = (e.flushing_kg||0) + (e.grouting_kg||0);
+        var tr = document.createElement('tr');
+        tr.innerHTML = '' +
+          '<td>'+escapeHtml(e.pile_number||'')+'</td>' +
+          '<td>'+escapeHtml(e.date||'')+(e.reported?'<div class="muted">Im Bericht</div>':'')+'</td>' +
+          '<td class="right">'+fmt(e.flushing_kg)+'&nbsp;</td>' +
+          '<td class="right">'+fmt(e.grouting_kg)+'&nbsp;</td>' +
+          '<td class="right"><b>'+fmt(total)+'</b>&nbsp;</td>' +
+          '<td class="right">'+fmt(restMap.get(e.id)||0)+'&nbsp;</td>' +
+          '<td class="right">'+fmt(e.silo_fill_kg)+'&nbsp;</td>' +
+          '<td><div class="row" style="gap:6px;"><button class="small" data-edit="'+e.id+'">Bearbeiten</button><button class="small" data-del="'+e.id+'">Löschen</button></div></td>';
         rowsEl.appendChild(tr);
       }
 
-      rowsEl.querySelectorAll('button[data-edit]').forEach(btn=>{
-        btn.addEventListener('click', () => onEdit(btn.getAttribute('data-edit')));
+      rowsEl.querySelectorAll('button[data-edit]').forEach(function(btn){
+        btn.addEventListener('click', function(){ onEdit(btn.getAttribute('data-edit')); });
       });
-      rowsEl.querySelectorAll('button[data-del]').forEach(btn=>{
-        btn.addEventListener('click', () => onDelete(btn.getAttribute('data-del')));
+      rowsEl.querySelectorAll('button[data-del]').forEach(function(btn){
+        btn.addEventListener('click', function(){ onDelete(btn.getAttribute('data-del')); });
       });
     }
 
     async function onEdit(id){
-      const e = currentEntries.find(x => x.id === id);
+      var e = currentEntries.find(function(x){ return x.id === id; });
       if (!e) return;
-      const p = prompt('Pfahlnummer:', e.pile_number ?? '') ?? e.pile_number;
-      const d = prompt('Datum (YYYY-MM-DD):', e.date ?? '') ?? e.date;
-      const s = prompt('Spülungsmenge (kg):', (e.flushing_kg ?? 0)) ?? e.flushing_kg;
-      const v = prompt('Verpressmenge (kg):', (e.grouting_kg ?? 0)) ?? e.grouting_kg;
-      const f = prompt('Silo-Befüllung (kg):', (e.silo_fill_kg ?? 0)) ?? e.silo_fill_kg;
-      const rep = confirm('Soll der Eintrag als "im Bericht enthalten" markiert sein? (OK = Ja, Abbrechen = Nein)') ? true : false;
+      var p = prompt('Pfahlnummer:', e.pile_number || '') || e.pile_number;
+      var d = prompt('Datum (YYYY-MM-DD):', e.date || '') || e.date;
+      var s = prompt('Spülungsmenge (kg):', (e.flushing_kg || 0)) || e.flushing_kg;
+      var v = prompt('Verpressmenge (kg):', (e.grouting_kg || 0)) || e.grouting_kg;
+      var f = prompt('Silo-Befüllung (kg):', (e.silo_fill_kg || 0)) || e.silo_fill_kg;
+      var rep = confirm('Soll der Eintrag als "im Bericht enthalten" markiert sein? (OK = Ja, Abbrechen = Nein)') ? true : false;
 
-      const flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), fill=parseFloat(f||'0');
+      var flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), fill=parseFloat(f||'0');
       if (!p || !d || flush<0 || grout<0 || fill<0) { alert('Ungültige Eingaben.'); return; }
 
-      const { error } = await sb.from('entries').update({
+      var up = await sb.from('entries').update({
         pile_number: p, date: d,
         flushing_kg: flush, grouting_kg: grout,
         silo_fill_kg: fill, reported: rep
       }).eq('id', id);
-      if (error) { alert('Fehler beim Aktualisieren: '+error.message); return; }
+      if (up.error) { alert('Fehler beim Aktualisieren: '+up.error.message); return; }
       await loadEntries();
     }
 
     async function onDelete(id){
       if (!confirm('Eintrag wirklich löschen?')) return;
-      const { error } = await sb.from('entries').delete().eq('id', id);
-      if (error) { alert('Fehler beim Löschen: ' + error.message); return; }
+      var del = await sb.from('entries').delete().eq('id', id);
+      if (del.error) { alert('Fehler beim Löschen: ' + del.error.message); return; }
       await loadEntries();
     }
 
-    async function makeReport(title, entries, markReported=false){
-      const ascForCalc = [...entries].sort((a,b)=>{
-        const ad = a.date||''; const bd=b.date||'';
+    async function makeReport(title, entries, markReported){
+      markReported = !!markReported;
+      var ascForCalc = entries.slice().sort(function(a,b){
+        var ad = a.date||''; var bd=b.date||'';
         if (ad !== bd) return ad<bd?-1:1;
-        const ac=a.created_at||''; const bc=b.created_at||'';
+        var ac=a.created_at||''; var bc=b.created_at||'';
         if (ac !== bc) return ac<bc?-1:1;
         return (a.id<b.id)?-1:1;
       });
-      const restMap = computeRunningRest(ascForCalc);
+      var restMap = computeRunningRest(ascForCalc);
 
-      const rowsHtml = ascForCalc.map(e=>{
-        const total = (e.flushing_kg||0)+(e.grouting_kg||0);
-        const rest  = restMap.get(e.id)||0;
+      var rowsHtml = ascForCalc.map(function(e){
+        var total = (e.flushing_kg||0)+(e.grouting_kg||0);
+        var rest  = restMap.get(e.id)||0;
         return '<tr>' +
             '<td>'+escapeHtml(e.pile_number||'')+'</td>' +
             '<td>'+escapeHtml(e.date||'')+'</td>' +
@@ -378,7 +383,7 @@
           '</tr>';
       }).join('');
 
-      const w = window.open('', '_blank');
+      var w = window.open('', '_blank');
       w.document.write('<!doctype html><html><head>' +
         '<meta charset="utf-8"><title>'+escapeHtml(title)+'</title>' +
         '<style>@page{size:A4;margin:14mm}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}h1{font-size:18px;margin:0 0 8px 0}.muted{font-size:12px;color:#555;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ddd;padding:6px 4px;text-align:left}th{font-size:12px;color:#333}td.r{text-align:right;white-space:nowrap}.footer{margin-top:12px;font-size:12px;color:#555}</style>' +
@@ -387,24 +392,24 @@
         '<div class="muted">Erstellt am '+new Date().toLocaleString('de-DE',{ timeZone:'Europe/Berlin' })+'</div>' +
         '<table><thead><tr><th>Pfahl</th><th>Datum</th><th class="r">Spülung (kg)</th><th class="r">Verpress. (kg)</th><th class="r">Gesamt (kg)</th><th class="r">Rest-Silo (kg)</th><th class="r">Silo-Befüllung (kg)</th><th>Erfasser</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>' +
         '<div class="footer">Hinweis: PDF kann per Druckdialog gespeichert/versendet werden.</div>' +
-        '<script>window.focus(); setTimeout(()=>window.print(), 200);<\/script>' +
+        '<script>window.focus(); setTimeout(function(){window.print();}, 200);<\/script>' +
         '</body></html>');
       w.document.close();
 
       if (markReported) {
-        const ids = entries.map(e=>e.id);
+        var ids = entries.map(function(e){ return e.id; });
         if (ids.length){
-          const { error } = await sb.from('entries').update({ reported:true }).in('id', ids);
-          if (error) alert('Konnte "im Bericht" nicht markieren: ' + error.message);
+          var up = await sb.from('entries').update({ reported:true }).in('id', ids);
+          if (up.error) alert('Konnte "im Bericht" nicht markieren: ' + up.error.message);
           await loadEntries();
         }
       }
     }
 
-    function fmt(x){ const v = Number(x||0); return v.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:2}); }
+    function fmt(x){ var v = Number(x||0); return v.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:2}); }
     function escapeHtml(s){
-      return (s??'').toString().replace(/[&<>"']/g, function(m){
-        return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',''':'&#39;' })[m];
+      return (s==null ? '' : String(s)).replace(/[&<>"']/g, function(m){
+        return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' })[m];
       });
     }
   });
