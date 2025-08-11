@@ -27,7 +27,7 @@
     @media (max-width:800px){ .col-3,.col-4,.col-6 { grid-column:span 12; } }
     button { padding:10px 14px; border:1px solid color-mix(in oklab, CanvasText, transparent 85%); background:color-mix(in oklab, Canvas, transparent 4%); color:CanvasText; border-radius:8px; cursor:pointer; }
     button.primary { background:color-mix(in oklab, AccentColor, Canvas 70%); color:AccentColorText; border-color:transparent; }
-    button.ghost { background:transparent; }
+    button.ghost { background:transparent; border-color:#d0d7de; }
     button.small { padding:6px 10px; font-size:13px; }
     .toolbar { display:flex; flex-wrap:wrap; gap:8px; }
     table { width:100%; border-collapse:collapse; }
@@ -63,7 +63,7 @@
   <header>
     <div class="bar">
       <h1>Bohr-/Silo-Erfassung</h1>
-      <div id="userBox" class="muted"></div>
+      <div class="row" style="gap:8px;align-items:center;"><div id="userBox" class="muted"></div><button id="logoutBtn" class="ghost small" style="display:none;">Abmelden</button></div>
     </div>
   </header>
 
@@ -168,35 +168,41 @@
 
       const usernameEl = document.getElementById('username');
       
-      // Force logout (show login, hide app) on load & when returning via back/forward cache
-      function forceLogout() {
+      const passwordEl = document.getElementById('password');
+
+      // Logout: clear storage and return to login
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('silo_user');
         currentUser = null;
         userBox.textContent = '';
         loginCard.style.display = 'block';
         appCard.style.display = 'none';
-        // clear login inputs
+        document.getElementById('logoutBtn').style.display = 'none';
         usernameEl.value = '';
         passwordEl.value = '';
-      }
-
-      // On first load
-      forceLogout();
-
-      // If coming back from bfcache (Safari/Firefox), enforce logout again
-      window.addEventListener('pageshow', (event) => {
-        if (event.persisted) {
-          forceLogout();
-        }
       });
 
-      const passwordEl = document.getElementById('password');
+      
+      // Auto-restore session from localStorage (stay logged in on refresh)
+      const savedUser = localStorage.getItem('silo_user');
+      if (savedUser) {
+        currentUser = savedUser;
+        userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
+        loginCard.style.display = 'none';
+        appCard.style.display = 'block';
+        loadEntries();
+        document.getElementById('logoutBtn').style.display = 'inline-block';
+      }
+
       document.getElementById('loginBtn').addEventListener('click', () => {
         const u = (usernameEl.value || '').trim().toLowerCase();
         const p = (passwordEl.value || '').trim().toLowerCase();
         if (!allowedUsers.includes(u)) { alert('Anmeldung fehlgeschlagen.'); return; }
         if (u !== p) { alert('Anmeldung fehlgeschlagen.'); return; }
         currentUser = u.charAt(0).toUpperCase() + u.slice(1);
+        localStorage.setItem('silo_user', currentUser);
         userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
+        document.getElementById('logoutBtn').style.display = 'inline-block';
         loginCard.style.display = 'none';
         appCard.style.display = 'block';
         loadEntries();
@@ -460,7 +466,7 @@
       }
 
       function fmt(x){ const v = Number(x||0); return v.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:2}); }
-      function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }[m])); }
+      function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }[m])); }[m])); }
     });
   </script>
 </body>
