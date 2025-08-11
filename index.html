@@ -6,69 +6,51 @@
   <title>Bohr-/Silo-Erfassung</title>
   <meta name="color-scheme" content="light">
   <style>
-    :root { --pad:12px; --gap:10px; --radius:10px; --maxw:1050px; }
+    :root { --pad:12px; --gap:10px; --radius:10px; --maxw:1050px; color-scheme: light; }
     * { box-sizing:border-box; }
-    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif; }
-    header { position:sticky; top:0; backdrop-filter:saturate(1.2) blur(6px); background:color-mix(in oklab, Canvas, transparent 15%); border-bottom:1px solid color-mix(in oklab, CanvasText, transparent 90%); z-index:1; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif; background:#fff; color:#111; }
+    header { position:sticky; top:0; backdrop-filter:saturate(1.2) blur(6px); background:#ffffffcc; border-bottom:1px solid #e5e7eb; z-index:1; }
     header .bar { max-width:var(--maxw); margin:auto; padding:10px var(--pad); display:flex; align-items:center; gap:12px; justify-content:space-between; }
     main { max-width:var(--maxw); margin:auto; padding:16px var(--pad) 48px; }
     h1 { font-size:18px; margin:0; }
-    .card { background:color-mix(in oklab, Canvas, transparent 8%); border:1px solid color-mix(in oklab, CanvasText, transparent 90%); border-radius:var(--radius); padding:16px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:var(--radius); padding:16px; }
     .stack { display:grid; gap:var(--gap); }
     .row { display:flex; gap:var(--gap); flex-wrap:wrap; }
-    label { font-size:13px; color:color-mix(in oklab, CanvasText, transparent 35%); display:block; margin-bottom:4px; }
+    label { font-size:13px; color:#475569; display:block; margin-bottom:4px; }
     input, button, select { font:inherit; }
     input[type='text'], input[type='password'], input[type='number'], input[type='date'] {
-      width:100%; padding:10px; border:1px solid color-mix(in oklab, CanvasText, transparent 85%);
-      border-radius:8px; background:Canvas; color:CanvasText;
+      width:100%; padding:10px; border:1px solid #d0d7de; border-radius:8px; background:#fff; color:#111;
     }
     .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:var(--gap); }
     .col-3 { grid-column:span 3; } .col-4 { grid-column:span 4; } .col-6 { grid-column:span 6; } .col-12 { grid-column:span 12; }
     @media (max-width:800px){ .col-3,.col-4,.col-6 { grid-column:span 12; } }
-    button { padding:10px 14px; border:1px solid color-mix(in oklab, CanvasText, transparent 85%); background:color-mix(in oklab, Canvas, transparent 4%); color:CanvasText; border-radius:8px; cursor:pointer; }
-    button.primary { background:color-mix(in oklab, AccentColor, Canvas 70%); color:AccentColorText; border-color:transparent; }
+    button { padding:10px 14px; border:1px solid #d0d7de; background:#f8fafc; color:#111; border-radius:10px; cursor:pointer; }
+    button.primary { background:#2563eb; color:#fff; border-color:#2563eb; }
+    button.primary:hover, button.primary:active { background:#1e54c7; border-color:#1e54c7; }
     button.ghost { background:transparent; border-color:#d0d7de; }
     button.small { padding:6px 10px; font-size:13px; }
     .toolbar { display:flex; flex-wrap:wrap; gap:8px; }
     table { width:100%; border-collapse:collapse; }
-    th, td { text-align:left; padding:10px 8px; border-bottom:1px solid color-mix(in oklab, CanvasText, transparent 90%); vertical-align:top; }
-    th { font-size:12px; color:color-mix(in oklab, CanvasText, transparent 35%); font-weight:600; position:sticky; top:52px; background:color-mix(in oklab, Canvas, transparent 6%); }
-    tbody tr:hover { background:color-mix(in oklab, Canvas, transparent 6%); }
-    .muted { color:color-mix(in oklab, CanvasText, transparent 45%); font-size:12px; }
-    .pill { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid color-mix(in oklab, CanvasText, transparent 85%); }
-    .right { text-align:right; }
-  
-    /* Force light theme for mobile readability */
-    :root { color-scheme: light; }
-    body { background:#ffffff; color:#111111; }
-    header { background:#ffffffcc; }
-    .card { background:#ffffff; }
-    /* High-contrast primary button */
-    button.primary { 
-      background:#2563eb; /* accessible blue */
-      color:#ffffff; 
-      border-color:#2563eb; 
-    }
-    button.primary:hover, button.primary:active { 
-      background:#1e54c7; 
-      border-color:#1e54c7; 
-    }
-    button { border-radius:10px; }
-
+    th, td { text-align:left; padding:10px 8px; border-bottom:1px solid #e5e7eb; vertical-align:top; }
+    th { font-size:12px; color:#475569; font-weight:600; position:sticky; top:52px; background:#f8fafc; }
+    tbody tr:hover { background:#f8fafc; }
+    .muted { color:#64748b; font-size:12px; }
+    .right { text-align:right; white-space:nowrap; }
   </style>
-  <!-- Supabase JS (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
 </head>
 <body>
   <header>
     <div class="bar">
       <h1>Bohr-/Silo-Erfassung</h1>
-      <div class="row" style="gap:8px;align-items:center;"><div id="userBox" class="muted"></div><button id="logoutBtn" class="ghost small" style="display:none;">Abmelden</button></div>
+      <div class="row" style="gap:8px;align-items:center;">
+        <div id="userBox" class="muted"></div>
+        <button id="logoutBtn" class="ghost small" style="display:none;">Abmelden</button>
+      </div>
     </div>
   </header>
 
   <main>
-    <!-- LOGIN (ohne Hinweise auf Nutzer/Passwort) -->
     <section id="loginCard" class="card stack">
       <div class="stack">
         <div class="grid">
@@ -87,7 +69,6 @@
       </div>
     </section>
 
-    <!-- APP -->
     <section id="appCard" class="card stack" style="display:none;">
       <div class="stack">
         <div class="grid">
@@ -149,325 +130,284 @@
   </footer>
 
   <script>
-    // Alles nach DOMContentLoaded, damit die Supabase-Library sicher geladen ist.
-    window.addEventListener('DOMContentLoaded', () => {
-      // === 1) Supabase Setup ===
-      // ⬇️ Trage hier DEINE Supabase-Projektdaten ein:
-      const SUPABASE_URL = "https://ridzmranmdpigksznaye.supabase.co"; // <- aus deinem Projekt
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHptcmFubWRwaWdrc3puYXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODkyMzQsImV4cCI6MjA3MDQ2NTIzNH0.F7LVQphhYCW4J_11qcqTH6z5ks2kzftIH3aB9m_ukiQ";         // <- Einstellungen → API → anon key
-      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+  window.addEventListener('DOMContentLoaded', () => {
+    // === Supabase Setup ===
+    const SUPABASE_URL = "https://ridzmranmdpigksznaye.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHptcmFubWRwaWdrc3puYXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODkyMzQsImV4cCI6MjA3MDQ2NTIzNH0.F7LVQphhYCW4J_11qcqTH6z5ks2kzftIH3aB9m_ukiQ";
+    if (typeof supabase === 'undefined') {
+      alert('Supabase-Bibliothek konnte nicht geladen werden. Bitte neu laden.');
+      return;
+    }
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
 
-      // === 2) Simpler Login (ohne Hinweise sichtbar) ===
-      const allowedUsers = ['david','michael','roman'];
-      let currentUser = null;
+    // === State & Elements ===
+    const allowedUsers = ['david','michael','roman'];
+    let currentUser = null;
 
-      const loginCard = document.getElementById('loginCard');
-      const appCard = document.getElementById('appCard');
-      const userBox = document.getElementById('userBox');
-      const footNote = document.getElementById('footNote');
+    const loginCard = document.getElementById('loginCard');
+    const appCard = document.getElementById('appCard');
+    const userBox = document.getElementById('userBox');
+    const footNote = document.getElementById('footNote');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-      const usernameEl = document.getElementById('username');
-      
-      const passwordEl = document.getElementById('password');
+    const usernameEl = document.getElementById('username');
+    const passwordEl = document.getElementById('password');
+    const pileEl = document.getElementById('pile');
+    const dateEl = document.getElementById('date');
+    const flushEl = document.getElementById('flushKg');
+    const groutEl = document.getElementById('groutKg');
+    const fillEl = document.getElementById('siloFillKg');
+    const rowsEl = document.getElementById('rows');
+    const summaryEl = document.getElementById('summary');
 
-      // Logout: clear storage and return to login
-      document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('silo_user');
-        currentUser = null;
-        userBox.textContent = '';
-        loginCard.style.display = 'block';
-        appCard.style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'none';
-        usernameEl.value = '';
-        passwordEl.value = '';
-      });
-
-      
-      // Auto-restore session from localStorage (stay logged in on refresh)
+    // Auto-restore session so refresh stays logged in
+    (function restore(){
       const savedUser = localStorage.getItem('silo_user');
       if (savedUser) {
         currentUser = savedUser;
         userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
         loginCard.style.display = 'none';
         appCard.style.display = 'block';
+        logoutBtn.style.display = 'inline-block';
         loadEntries();
-        document.getElementById('logoutBtn').style.display = 'inline-block';
       }
+    })();
 
-      document.getElementById('loginBtn').addEventListener('click', () => {
-        const u = (usernameEl.value || '').trim().toLowerCase();
-        const p = (passwordEl.value || '').trim().toLowerCase();
-        if (!allowedUsers.includes(u)) { alert('Anmeldung fehlgeschlagen.'); return; }
-        if (u !== p) { alert('Anmeldung fehlgeschlagen.'); return; }
-        currentUser = u.charAt(0).toUpperCase() + u.slice(1);
-        localStorage.setItem('silo_user', currentUser);
-        userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
-        document.getElementById('logoutBtn').style.display = 'inline-block';
-        loginCard.style.display = 'none';
-        appCard.style.display = 'block';
-        loadEntries();
-      });
+    // Heute als Default-Datum
+    (function setToday(){
+      const now = new Date();
+      const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
+      dateEl.value = y + '-' + m + '-' + d;
+    })();
 
-      // Enter-Taste unterstützt Login
-      [usernameEl, passwordEl].forEach(el => el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('loginBtn').click();
-      }));
-
-      // === 3) Form & Aktionen ===
-      const pileEl = document.getElementById('pile');
-      const dateEl = document.getElementById('date');
-      const flushEl = document.getElementById('flushKg');
-      const groutEl = document.getElementById('groutKg');
-      const fillEl = document.getElementById('siloFillKg');
-      const rowsEl = document.getElementById('rows');
-      const summaryEl = document.getElementById('summary');
-
-      // Standard: heutiges Datum (Europe/Berlin)
-      (function setToday(){
-        const tz = 'Europe/Berlin';
-        const now = new Date();
-        const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
-        dateEl.value = y + '-' + m + '-' + d;
-      })();
-
-      document.getElementById('createBtn').addEventListener('click', async () => {
-        const pile = (pileEl.value||'').trim();
-        const date = dateEl.value;
-        const flush = parseFloat(flushEl.value||'0');
-        const grout = parseFloat(groutEl.value||'0');
-        const fill  = parseFloat(fillEl.value||'0');
-        if (!pile) { alert('Pfahlnummer angeben.'); return; }
-        if (!date) { alert('Datum auswählen.'); return; }
-        if (flush < 0 || grout < 0 || fill < 0) { alert('Negative Werte sind nicht erlaubt.'); return; }
-
-        const { error } = await sb.from('entries').insert({
-          user_name: currentUser,
-          pile_number: pile,
-          date: date,
-          flushing_kg: flush,
-          grouting_kg: grout,
-          silo_fill_kg: fill,
-          reported: false
-        });
-        if (error) { alert('Fehler beim Speichern: ' + error.message); return; }
-
-        groutEl.value = ''; flushEl.value=''; fillEl.value='';
-        await loadEntries(true);
-      });
-
-      document.getElementById('hideOldBtn').addEventListener('click', () => render(currentEntries, {hideReported:true}));
-      document.getElementById('showAllBtn').addEventListener('click', () => render(currentEntries, {hideReported:false}));
-      document.getElementById('reportAllBtn').addEventListener('click', () => makeReport('Bericht (alle Einträge)', currentEntries));
-      document.getElementById('reportNewBtn').addEventListener('click', async () => {
-        const onlyNew = currentEntries.filter(e => !e.reported);
-        if (onlyNew.length === 0) { alert('Keine neuen (nicht gemeldeten) Einträge.'); return; }
-        await makeReport('Bericht (nur neue Einträge)', onlyNew, /*markReported*/ true);
-      });
-
-      // === 4) Laden, Rechnen, Rendern ===
-      let currentEntries = [];
-
-      async function loadEntries(scrollTop=false){
-        footNote.textContent = 'Lade Einträge…';
-        const { data, error } = await sb
-          .from('entries')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (error) { alert('Fehler beim Laden: ' + error.message); return; }
-        currentEntries = data || [];
-        render(currentEntries, {hideReported:false});
-        footNote.textContent = currentEntries.length + ' Einträge – sichtbar für alle Nutzer.';
-        if (scrollTop) window.scrollTo({top:0, behavior:'smooth'});
+    // Login Handler
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const u = (usernameEl.value || '').trim().toLowerCase();
+      const p = (passwordEl.value || '').trim().toLowerCase();
+      if (!allowedUsers.includes(u) || u !== p) {
+        alert('Anmeldung fehlgeschlagen.');
+        return;
       }
-
-      function computeRunningRest(allEntriesAsc){
-        let rest = 0;
-        const map = new Map();
-        for (const e of allEntriesAsc) {
-          const total = (e.flushing_kg||0) + (e.grouting_kg||0);
-          rest = rest + (e.silo_fill_kg||0) - total;
-          map.set(e.id, rest);
-        }
-        return map;
-      }
-
-      function render(entries, opts={hideReported:false}){
-        const ascForCalc = [...entries].sort((a,b)=>{
-          const ad = a.date || ''; const bd = b.date || '';
-          if (ad !== bd) return ad < bd ? -1 : 1;
-          const ac = a.created_at || ''; const bc = b.created_at || '';
-          if (ac !== bc) return ac < bc ? -1 : 1;
-          return (a.id < b.id) ? -1 : 1;
-        });
-        const restMap = computeRunningRest(ascForCalc);
-
-        let list = [...entries].sort((a,b)=>{
-          const ac = a.created_at || ''; const bc = b.created_at || '';
-          return ac > bc ? -1 : (ac < bc ? 1 : 0);
-        });
-        if (opts.hideReported) list = list.filter(e => !e.reported);
-
-        const sumFlush = list.reduce((s,e)=>s+(e.flushing_kg||0),0);
-        const sumGrout = list.reduce((s,e)=>s+(e.grouting_kg||0),0);
-        const sumTotal = list.reduce((s,e)=>s+((e.flushing_kg||0)+(e.grouting_kg||0)),0);
-
-        summaryEl.textContent = 'Einträge: ' + list.length +
-          ' | Spülung Σ: ' + fmt(sumFlush) + ' kg' +
-          ' | Verpressung Σ: ' + fmt(sumGrout) + ' kg' +
-          ' | Gesamt Σ: ' + fmt(sumTotal) + ' kg' + (opts.hideReported?' | (alte Einträge ausgeblendet)':''
-        );
-
-        rowsEl.innerHTML = '';
-        for (const e of list) {
-          const total = (e.flushing_kg||0) + (e.grouting_kg||0);
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${escapeHtml(e.pile_number||'')}</td>
-            <td>${escapeHtml(e.date||'')}${e.reported?'<div class="muted">Im Bericht</div>':''}</td>
-            <td class="right">${fmt(e.flushing_kg)}&nbsp;</td>
-            <td class="right">${fmt(e.grouting_kg)}&nbsp;</td>
-            <td class="right"><b>${fmt(total)}</b>&nbsp;</td>
-            <td class="right">${fmt(restMap.get(e.id)||0)}&nbsp;</td>
-            <td class="right">${fmt(e.silo_fill_kg)}&nbsp;</td>
-            <td>
-              <div class="row" style="gap:6px;">
-                <button class="small" data-edit="${e.id}">Bearbeiten</button>
-                <button class="small" data-del="${e.id}">Löschen</button>
-              </div>
-            </td>
-          `;
-          rowsEl.appendChild(tr);
-        }
-
-        rowsEl.querySelectorAll('button[data-edit]').forEach(btn=>{
-          btn.addEventListener('click', () => onEdit(btn.getAttribute('data-edit')));
-        });
-        rowsEl.querySelectorAll('button[data-del]').forEach(btn=>{
-          btn.addEventListener('click', () => onDelete(btn.getAttribute('data-del')));
-        });
-      }
-
-      async function onEdit(id){
-        const e = currentEntries.find(x => x.id === id);
-        if (!e) return;
-
-        const p = prompt('Pfahlnummer:', e.pile_number ?? '') ?? e.pile_number;
-        const d = prompt('Datum (YYYY-MM-DD):', e.date ?? '') ?? e.date;
-        const s = prompt('Spülungsmenge (kg):', (e.flushing_kg ?? 0)) ?? e.flushing_kg;
-        const v = prompt('Verpressmenge (kg):', (e.grouting_kg ?? 0)) ?? e.grouting_kg;
-        const f = prompt('Silo-Befüllung (kg):', (e.silo_fill_kg ?? 0)) ?? e.silo_fill_kg;
-        const rep = confirm('Soll der Eintrag als "im Bericht enthalten" markiert sein? (OK = Ja, Abbrechen = Nein)') ? true : false;
-
-        const flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), fill=parseFloat(f||'0');
-        if (!p || !d || flush<0 || grout<0 || fill<0) { alert('Ungültige Eingaben.'); return; }
-
-        const { error } = await sb.from('entries').update({
-          pile_number: p, date: d,
-          flushing_kg: flush, grouting_kg: grout,
-          silo_fill_kg: fill, reported: rep
-        }).eq('id', id);
-        if (error) { alert('Fehler beim Aktualisieren: '+error.message); return; }
-        await loadEntries();
-      }
-
-      async function onDelete(id){
-        if (!confirm('Eintrag wirklich löschen?')) return;
-        const { error } = await sb.from('entries').delete().eq('id', id);
-        if (error) { alert('Fehler beim Löschen: ' + error.message); return; }
-        await loadEntries();
-      }
-
-      async function makeReport(title, entries, markReported=false){
-        const ascForCalc = [...entries].sort((a,b)=>{
-          const ad = a.date||''; const bd=b.date||'';
-          if (ad !== bd) return ad<bd?-1:1;
-          const ac=a.created_at||''; const bc=b.created_at||'';
-          if (ac !== bc) return ac<bc?-1:1;
-          return (a.id<b.id)?-1:1;
-        });
-        const restMap = computeRunningRest(ascForCalc);
-
-        const rowsHtml = ascForCalc.map(e=>{
-          const total = (e.flushing_kg||0)+(e.grouting_kg||0);
-          const rest  = restMap.get(e.id)||0;
-          return `
-            <tr>
-              <td>${escapeHtml(e.pile_number||'')}</td>
-              <td>${escapeHtml(e.date||'')}</td>
-              <td class="r">${fmt(e.flushing_kg)}</td>
-              <td class="r">${fmt(e.grouting_kg)}</td>
-              <td class="r">${fmt(total)}</td>
-              <td class="r">${fmt(rest)}</td>
-              <td class="r">${fmt(e.silo_fill_kg)}</td>
-              <td>${escapeHtml(e.user_name||'')}</td>
-            </tr>`;
-        }).join('');
-
-        const w = window.open('', '_blank');
-        w.document.write(`<!doctype html>
-          <html><head>
-          <meta charset="utf-8"><title>${escapeHtml(title)}</title>
-          <style>
-            @page { size: A4; margin: 14mm; }
-            body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-            h1 { font-size: 18px; margin:0 0 8px 0; }
-            .muted { font-size: 12px; color:#555; margin-bottom:12px; }
-            table { width:100%; border-collapse:collapse; }
-            th, td { border-bottom: 1px solid #ddd; padding: 6px 4px; text-align:left; }
-            th { font-size:12px; color:#333; }
-            td.r { text-align:right; white-space:nowrap; }
-            .footer { margin-top:12px; font-size:12px; color:#555; }
-          
-    /* Force light theme for mobile readability */
-    :root { color-scheme: light; }
-    body { background:#ffffff; color:#111111; }
-    header { background:#ffffffcc; }
-    .card { background:#ffffff; }
-    /* High-contrast primary button */
-    button.primary { 
-      background:#2563eb; /* accessible blue */
-      color:#ffffff; 
-      border-color:#2563eb; 
-    }
-    button.primary:hover, button.primary:active { 
-      background:#1e54c7; 
-      border-color:#1e54c7; 
-    }
-    button { border-radius:10px; }
-
-  </style>
-          </head><body>
-            <h1>${escapeHtml(title)}</h1>
-            <div class="muted">Erstellt am ${new Date().toLocaleString('de-DE',{ timeZone:'Europe/Berlin' })}</div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Pfahl</th><th>Datum</th>
-                  <th class="r">Spülung (kg)</th><th class="r">Verpress. (kg)</th>
-                  <th class="r">Gesamt (kg)</th><th class="r">Rest-Silo (kg)</th>
-                  <th class="r">Silo-Befüllung (kg)</th><th>Erfasser</th>
-                </tr>
-              </thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
-            <div class="footer">Hinweis: PDF kann per Druckdialog gespeichert/versendet werden.</div>
-            <script>window.focus(); setTimeout(()=>window.print(), 200);<\/script>
-          </body></html>`);
-        w.document.close();
-
-        if (markReported) {
-          const ids = entries.map(e=>e.id);
-          if (ids.length){
-            const { error } = await sb.from('entries').update({ reported:true }).in('id', ids);
-            if (error) alert('Konnte "im Bericht" nicht markieren: ' + error.message);
-            await loadEntries();
-          }
-        }
-      }
-
-      function fmt(x){ const v = Number(x||0); return v.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:2}); }
-      function escapeHtml(s){ return (s??'').toString().replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }[m])); }[m])); }
+      currentUser = u.charAt(0).toUpperCase() + u.slice(1);
+      localStorage.setItem('silo_user', currentUser);
+      userBox.innerHTML = 'Angemeldet als <b>' + currentUser + '</b>';
+      loginCard.style.display = 'none';
+      appCard.style.display = 'block';
+      logoutBtn.style.display = 'inline-block';
+      loadEntries();
     });
+
+    [usernameEl, passwordEl].forEach(el => el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('loginBtn').click();
+    }));
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('silo_user');
+      currentUser = null;
+      userBox.textContent = '';
+      loginCard.style.display = 'block';
+      appCard.style.display = 'none';
+      logoutBtn.style.display = 'none';
+      usernameEl.value = '';
+      passwordEl.value = '';
+    });
+
+    // Create entry
+    document.getElementById('createBtn').addEventListener('click', async () => {
+      if (!currentUser) { alert('Bitte zuerst anmelden.'); return; }
+      const pile = (pileEl.value||'').trim();
+      const date = dateEl.value;
+      const flush = parseFloat(flushEl.value||'0');
+      const grout = parseFloat(groutEl.value||'0');
+      const fill  = parseFloat(fillEl.value||'0');
+      if (!pile) { alert('Pfahlnummer angeben.'); return; }
+      if (!date) { alert('Datum auswählen.'); return; }
+      if (flush < 0 || grout < 0 || fill < 0) { alert('Negative Werte sind nicht erlaubt.'); return; }
+
+      const { error } = await sb.from('entries').insert({
+        user_name: currentUser,
+        pile_number: pile,
+        date: date,
+        flushing_kg: flush,
+        grouting_kg: grout,
+        silo_fill_kg: fill,
+        reported: false
+      });
+      if (error) { alert('Fehler beim Speichern: ' + error.message); return; }
+
+      groutEl.value = ''; flushEl.value=''; fillEl.value='';
+      await loadEntries(true);
+    });
+
+    document.getElementById('hideOldBtn').addEventListener('click', () => render(currentEntries, {hideReported:true}));
+    document.getElementById('showAllBtn').addEventListener('click', () => render(currentEntries, {hideReported:false}));
+    document.getElementById('reportAllBtn').addEventListener('click', () => makeReport('Bericht (alle Einträge)', currentEntries));
+    document.getElementById('reportNewBtn').addEventListener('click', async () => {
+      const onlyNew = currentEntries.filter(e => !e.reported);
+      if (onlyNew.length === 0) { alert('Keine neuen (nicht gemeldeten) Einträge.'); return; }
+      await makeReport('Bericht (nur neue Einträge)', onlyNew, true);
+    });
+
+    // Data + render
+    let currentEntries = [];
+
+    async function loadEntries(scrollTop=false){
+      footNote.textContent = 'Lade Einträge…';
+      const { data, error } = await sb.from('entries').select('*').order('created_at', { ascending: false });
+      if (error) { alert('Fehler beim Laden: ' + error.message); return; }
+      currentEntries = data || [];
+      render(currentEntries, {hideReported:false});
+      footNote.textContent = currentEntries.length + ' Einträge – sichtbar für alle Nutzer.';
+      if (scrollTop) window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function computeRunningRest(allEntriesAsc){
+      let rest = 0;
+      const map = new Map();
+      for (const e of allEntriesAsc) {
+        const total = (e.flushing_kg||0) + (e.grouting_kg||0);
+        rest = rest + (e.silo_fill_kg||0) - total;
+        map.set(e.id, rest);
+      }
+      return map;
+    }
+
+    function render(entries, opts={hideReported:false}){
+      const ascForCalc = [...entries].sort((a,b)=>{
+        const ad = a.date || ''; const bd = b.date || '';
+        if (ad !== bd) return ad < bd ? -1 : 1;
+        const ac = a.created_at || ''; const bc = b.created_at || '';
+        if (ac !== bc) return ac < bc ? -1 : 1;
+        return (a.id < b.id) ? -1 : 1;
+      });
+      const restMap = computeRunningRest(ascForCalc);
+
+      let list = [...entries].sort((a,b)=>{
+        const ac = a.created_at || ''; const bc = b.created_at || '';
+        return ac > bc ? -1 : (ac < bc ? 1 : 0);
+      });
+      if (opts.hideReported) list = list.filter(e => !e.reported);
+
+      const sumFlush = list.reduce((s,e)=>s+(e.flushing_kg||0),0);
+      const sumGrout = list.reduce((s,e)=>s+(e.grouting_kg||0),0);
+      const sumTotal = list.reduce((s,e)=>s+((e.flushing_kg||0)+(e.grouting_kg||0)),0);
+
+      summaryEl.textContent = 'Einträge: ' + list.length +
+        ' | Spülung Σ: ' + fmt(sumFlush) + ' kg' +
+        ' | Verpressung Σ: ' + fmt(sumGrout) + ' kg' +
+        ' | Gesamt Σ: ' + fmt(sumTotal) + ' kg' + (opts.hideReported?' | (alte Einträge ausgeblendet)':'')
+      ;
+
+      rowsEl.innerHTML = '';
+      for (const e of list) {
+        const total = (e.flushing_kg||0) + (e.grouting_kg||0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = [
+          '<td>'+escapeHtml(e.pile_number||'')+'</td>',
+          '<td>'+escapeHtml(e.date||'')+(e.reported?'<div class="muted">Im Bericht</div>':'')+'</td>',
+          '<td class="right">'+fmt(e.flushing_kg)+'&nbsp;</td>',
+          '<td class="right">'+fmt(e.grouting_kg)+'&nbsp;</td>',
+          '<td class="right"><b>'+fmt(total)+'</b>&nbsp;</td>',
+          '<td class="right">'+fmt(restMap.get(e.id)||0)+'&nbsp;</td>',
+          '<td class="right">'+fmt(e.silo_fill_kg)+'&nbsp;</td>',
+          '<td><div class="row" style="gap:6px;"><button class="small" data-edit="'+e.id+'">Bearbeiten</button><button class="small" data-del="'+e.id+'">Löschen</button></div></td>'
+        ].join('');
+        rowsEl.appendChild(tr);
+      }
+
+      rowsEl.querySelectorAll('button[data-edit]').forEach(btn=>{
+        btn.addEventListener('click', () => onEdit(btn.getAttribute('data-edit')));
+      });
+      rowsEl.querySelectorAll('button[data-del]').forEach(btn=>{
+        btn.addEventListener('click', () => onDelete(btn.getAttribute('data-del')));
+      });
+    }
+
+    async function onEdit(id){
+      const e = currentEntries.find(x => x.id === id);
+      if (!e) return;
+      const p = prompt('Pfahlnummer:', e.pile_number ?? '') ?? e.pile_number;
+      const d = prompt('Datum (YYYY-MM-DD):', e.date ?? '') ?? e.date;
+      const s = prompt('Spülungsmenge (kg):', (e.flushing_kg ?? 0)) ?? e.flushing_kg;
+      const v = prompt('Verpressmenge (kg):', (e.grouting_kg ?? 0)) ?? e.grouting_kg;
+      const f = prompt('Silo-Befüllung (kg):', (e.silo_fill_kg ?? 0)) ?? e.silo_fill_kg;
+      const rep = confirm('Soll der Eintrag als "im Bericht enthalten" markiert sein? (OK = Ja, Abbrechen = Nein)') ? true : false;
+
+      const flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), fill=parseFloat(f||'0');
+      if (!p || !d || flush<0 || grout<0 || fill<0) { alert('Ungültige Eingaben.'); return; }
+
+      const { error } = await sb.from('entries').update({
+        pile_number: p, date: d,
+        flushing_kg: flush, grouting_kg: grout,
+        silo_fill_kg: fill, reported: rep
+      }).eq('id', id);
+      if (error) { alert('Fehler beim Aktualisieren: '+error.message); return; }
+      await loadEntries();
+    }
+
+    async function onDelete(id){
+      if (!confirm('Eintrag wirklich löschen?')) return;
+      const { error } = await sb.from('entries').delete().eq('id', id);
+      if (error) { alert('Fehler beim Löschen: ' + error.message); return; }
+      await loadEntries();
+    }
+
+    async function makeReport(title, entries, markReported=false){
+      const ascForCalc = [...entries].sort((a,b)=>{
+        const ad = a.date||''; const bd=b.date||'';
+        if (ad !== bd) return ad<bd?-1:1;
+        const ac=a.created_at||''; const bc=b.created_at||'';
+        if (ac !== bc) return ac<bc?-1:1;
+        return (a.id<b.id)?-1:1;
+      });
+      const restMap = computeRunningRest(ascForCalc);
+
+      const rowsHtml = ascForCalc.map(e=>{
+        const total = (e.flushing_kg||0)+(e.grouting_kg||0);
+        const rest  = restMap.get(e.id)||0;
+        return '<tr>' +
+            '<td>'+escapeHtml(e.pile_number||'')+'</td>' +
+            '<td>'+escapeHtml(e.date||'')+'</td>' +
+            '<td class="r">'+fmt(e.flushing_kg)+'</td>' +
+            '<td class="r">'+fmt(e.grouting_kg)+'</td>' +
+            '<td class="r">'+fmt(total)+'</td>' +
+            '<td class="r">'+fmt(rest)+'</td>' +
+            '<td class="r">'+fmt(e.silo_fill_kg)+'</td>' +
+            '<td>'+escapeHtml(e.user_name||'')+'</td>' +
+          '</tr>';
+      }).join('');
+
+      const w = window.open('', '_blank');
+      w.document.write('<!doctype html><html><head>' +
+        '<meta charset="utf-8"><title>'+escapeHtml(title)+'</title>' +
+        '<style>@page{size:A4;margin:14mm}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}h1{font-size:18px;margin:0 0 8px 0}.muted{font-size:12px;color:#555;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ddd;padding:6px 4px;text-align:left}th{font-size:12px;color:#333}td.r{text-align:right;white-space:nowrap}.footer{margin-top:12px;font-size:12px;color:#555}</style>' +
+        '</head><body>' +
+        '<h1>'+escapeHtml(title)+'</h1>' +
+        '<div class="muted">Erstellt am '+new Date().toLocaleString('de-DE',{ timeZone:'Europe/Berlin' })+'</div>' +
+        '<table><thead><tr><th>Pfahl</th><th>Datum</th><th class="r">Spülung (kg)</th><th class="r">Verpress. (kg)</th><th class="r">Gesamt (kg)</th><th class="r">Rest-Silo (kg)</th><th class="r">Silo-Befüllung (kg)</th><th>Erfasser</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>' +
+        '<div class="footer">Hinweis: PDF kann per Druckdialog gespeichert/versendet werden.</div>' +
+        '<script>window.focus(); setTimeout(()=>window.print(), 200);<\/script>' +
+        '</body></html>');
+      w.document.close();
+
+      if (markReported) {
+        const ids = entries.map(e=>e.id);
+        if (ids.length){
+          const { error } = await sb.from('entries').update({ reported:true }).in('id', ids);
+          if (error) alert('Konnte "im Bericht" nicht markieren: ' + error.message);
+          await loadEntries();
+        }
+      }
+    }
+
+    function fmt(x){ const v = Number(x||0); return v.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:2}); }
+    function escapeHtml(s){
+      return (s??'').toString().replace(/[&<>"']/g, function(m){
+        return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',''':'&#39;' })[m];
+      });
+    }
+  });
   </script>
 </body>
 </html>
