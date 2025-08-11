@@ -89,6 +89,10 @@
             <input id="groutKg" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0">
           </div>
           <div class="col-4">
+            <label for="pressureBar">Druck (bar)</label>
+            <input id="pressureBar" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0">
+          </div>
+          <div class="col-4">
             <label for="siloFillKg">Silo-Befüllung (kg)</label>
             <input id="siloFillKg" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0 (optional)">
           </div>
@@ -113,6 +117,7 @@
                 <th class="right">Spülung (kg)</th>
                 <th class="right">Verpress. (kg)</th>
                 <th class="right">Gesamt (kg)</th>
+                <th class="right">Druck (bar)</th>
                 <th class="right">Rest-Silo (kg)</th>
                 <th class="right">Silo-Befüllung (kg)</th>
                 <th>Aktion</th>
@@ -156,6 +161,7 @@
     var dateEl = document.getElementById('date');
     var flushEl = document.getElementById('flushKg');
     var groutEl = document.getElementById('groutKg');
+    var pressureEl = document.getElementById('pressureBar');
     var fillEl = document.getElementById('siloFillKg');
     var rowsEl = document.getElementById('rows');
     var summaryEl = document.getElementById('summary');
@@ -222,10 +228,11 @@
       var date = dateEl.value;
       var flush = parseFloat(flushEl.value||'0');
       var grout = parseFloat(groutEl.value||'0');
+      var pressure = parseFloat(pressureEl.value||'0');
       var fill  = parseFloat(fillEl.value||'0');
       if (!pile) { alert('Pfahlnummer angeben.'); return; }
       if (!date) { alert('Datum auswählen.'); return; }
-      if (flush < 0 || grout < 0 || fill < 0) { alert('Negative Werte sind nicht erlaubt.'); return; }
+      if (flush < 0 || grout < 0 || pressure < 0 || fill < 0) { alert('Negative Werte sind nicht erlaubt.'); return; }
 
       var ins = await sb.from('entries').insert({
         user_name: currentUser,
@@ -233,12 +240,13 @@
         date: date,
         flushing_kg: flush,
         grouting_kg: grout,
+        pressure_bar: pressure,
         silo_fill_kg: fill,
         reported: false
       });
       if (ins.error) { alert('Fehler beim Speichern: ' + ins.error.message); return; }
 
-      groutEl.value = ''; flushEl.value=''; fillEl.value='';
+      groutEl.value = ''; flushEl.value=''; pressureEl.value=''; fillEl.value='';
       await loadEntries(true);
     });
 
@@ -314,6 +322,7 @@
           '<td class="right">'+fmt(e.flushing_kg)+'&nbsp;</td>' +
           '<td class="right">'+fmt(e.grouting_kg)+'&nbsp;</td>' +
           '<td class="right"><b>'+fmt(total)+'</b>&nbsp;</td>' +
+          '<td class="right">'+fmt(e.pressure_bar) +'&nbsp;</td>' +
           '<td class="right">'+fmt(restMap.get(e.id)||0)+'&nbsp;</td>' +
           '<td class="right">'+fmt(e.silo_fill_kg)+'&nbsp;</td>' +
           '<td><div class="row" style="gap:6px;"><button class="small" data-edit="'+e.id+'">Bearbeiten</button><button class="small" data-del="'+e.id+'">Löschen</button></div></td>';
@@ -335,15 +344,17 @@
       var d = prompt('Datum (YYYY-MM-DD):', e.date || '') || e.date;
       var s = prompt('Spülungsmenge (kg):', (e.flushing_kg || 0)) || e.flushing_kg;
       var v = prompt('Verpressmenge (kg):', (e.grouting_kg || 0)) || e.grouting_kg;
+      var pr = prompt('Druck (bar):', (e.pressure_bar || 0)) || e.pressure_bar;
       var f = prompt('Silo-Befüllung (kg):', (e.silo_fill_kg || 0)) || e.silo_fill_kg;
       var rep = confirm('Soll der Eintrag als "im Bericht enthalten" markiert sein? (OK = Ja, Abbrechen = Nein)') ? true : false;
 
-      var flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), fill=parseFloat(f||'0');
-      if (!p || !d || flush<0 || grout<0 || fill<0) { alert('Ungültige Eingaben.'); return; }
+      var flush = parseFloat(s||'0'), grout=parseFloat(v||'0'), pressure=parseFloat(pr||'0'), fill=parseFloat(f||'0');
+      if (!p || !d || flush<0 || grout<0 || pressure<0 || fill<0) { alert('Ungültige Eingaben.'); return; }
 
       var up = await sb.from('entries').update({
         pile_number: p, date: d,
         flushing_kg: flush, grouting_kg: grout,
+        pressure_bar: pressure,
         silo_fill_kg: fill, reported: rep
       }).eq('id', id);
       if (up.error) { alert('Fehler beim Aktualisieren: '+up.error.message); return; }
@@ -377,6 +388,7 @@
             '<td class="r">'+fmt(e.flushing_kg)+'</td>' +
             '<td class="r">'+fmt(e.grouting_kg)+'</td>' +
             '<td class="r">'+fmt(total)+'</td>' +
+            '<td class="r">'+fmt(e.pressure_bar)+'</td>' +
             '<td class="r">'+fmt(rest)+'</td>' +
             '<td class="r">'+fmt(e.silo_fill_kg)+'</td>' +
             '<td>'+escapeHtml(e.user_name||'')+'</td>' +
@@ -390,7 +402,7 @@
         '</head><body>' +
         '<h1>'+escapeHtml(title)+'</h1>' +
         '<div class="muted">Erstellt am '+new Date().toLocaleString('de-DE',{ timeZone:'Europe/Berlin' })+'</div>' +
-        '<table><thead><tr><th>Pfahl</th><th>Datum</th><th class="r">Spülung (kg)</th><th class="r">Verpress. (kg)</th><th class="r">Gesamt (kg)</th><th class="r">Rest-Silo (kg)</th><th class="r">Silo-Befüllung (kg)</th><th>Erfasser</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>' +
+        '<table><thead><tr><th>Pfahl</th><th>Datum</th><th class="r">Spülung (kg)</th><th class="r">Verpress. (kg)</th><th class="r">Gesamt (kg)</th><th class="r">Druck (bar)</th><th class="r">Rest-Silo (kg)</th><th class="r">Silo-Befüllung (kg)</th><th>Erfasser</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>' +
         '<div class="footer">Hinweis: PDF kann per Druckdialog gespeichert/versendet werden.</div>' +
         '<script>window.focus(); setTimeout(function(){window.print();}, 200);<\/script>' +
         '</body></html>');
